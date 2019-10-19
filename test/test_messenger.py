@@ -10,18 +10,29 @@ from common.c_messenger import Sender, Receiver
 TEST_PROCESS_ID = 1
 
 
+def func1(json_mess):
+    print('exec func1')
+
+
+def func2(json_mess):
+    print('exec func2')
+
+
+def func3(json_mess):
+    print('exec func3')
+
+
 class TestMessenger(unittest.TestCase):
     def setUp(self):
         print('TestMessenger setup')
         self.receiver = Receiver(TEST_PROCESS_ID)
-        d_callbacks = {'message': 't', 'callback': 'est'}
-        j_callbacks = json.dumps(d_callbacks)
-        self.recv_thread = threading.Thread(target=self.receiver.open, args=(j_callbacks,))
+        d_callbacks = {'func1': func1, 'func2': func2, 'func3': func3}
+        self.recv_thread = threading.Thread(target=self.receiver.open, args=(d_callbacks,))
         self.recv_thread.start()
         self.sender = Sender()
     
     def test_send_mess(self):
-        d_message = {'message': 't', 'arg1': 'est'}
+        d_message = {'func': 'func2', 'arg': 'test'}
         j_message = json.dumps(d_message)
         result = self.sender.send(TEST_PROCESS_ID, j_message)
         self.assertEqual(True, result)

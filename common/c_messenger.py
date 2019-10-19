@@ -36,39 +36,48 @@ class Sender:
 
 
 class Receiver:
-    PORT = REF_PORT
-    cancel = False
+    __PORT = REF_PORT
+    __cancel = False
 
     def __init__(self, process_id):
-        self.PORT = get_port(process_id)
+        self.__PORT = get_port(process_id)
     
     def open(self, callbacks):
-        self.sock = socket(AF_INET, SOCK_STREAM)
-        self.sock.bind((HOST, self.PORT))
-        self.NUM_THREAD = 4
-        self.sock.listen(self.NUM_THREAD)
+        self.__sock = socket(AF_INET, SOCK_STREAM)
+        self.__sock.bind((HOST, self.__PORT))
+        self.__NUM_THREAD = 4
+        self.__sock.listen(self.__NUM_THREAD)
 
         while True:
             try:
-                if self.cancel:
-                    self.sock.close()
+                if self.__cancel:
+                    self.__sock.close()
                     break
-                conn, addr = self.sock.accept()
-                self.MAX_MASSAGE = 2048
-                mess = conn.recv(self.MAX_MASSAGE).decode('utf-8')
+                conn, addr = self.__sock.accept()
+                self.__MAX_MASSAGE = 2048
+                mess = conn.recv(self.__MAX_MASSAGE).decode('utf-8')
                 conn.close()
                 logger().info('message: ' + mess)
                 try:
                     json_mess = json.loads(mess)
                     logger().info('json_mess: %s', json_mess)
-                
+                    func_name = self.__get_func_name(json_mess)
+                    if(func_name in callbacks):
+                        logger().debug('target func is exist: %s', func_name)
+                        callbacks[func_name](json_mess)
+                    else:
+                        logger().error('target func is not exist: %s', func_name)
+
                 except json.JSONDecodeError as e:
-                    self.sock.close()
+                    self.__sock.close()
                     logger().exception('Exception: %s', e)
             
             except InterruptedError as e:
-                self.sock.close()
+                self.__sock.close()
                 logger().exception('Exception: %s', e)
     
     def close(self):
-        self.cancel = True
+        self.__cancel = True
+    
+    def __get_func_name(self, json_mess):
+        return json_mess['func']
