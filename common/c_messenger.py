@@ -62,7 +62,10 @@ class Receiver:
                     json_mess = json.loads(mess)
                     logger().info('json_mess: %s', json_mess)
                     func_name = self.__get_func_name(json_mess)
-                    if(func_name in callbacks):
+                    if func_name == '':
+                        logger().error('func name is not exist: %s', json_mess)
+                        continue
+                    if func_name in callbacks:
                         logger().debug('target func is exist: %s', func_name)
                         callbacks[func_name](json_mess)
                     else:
@@ -80,4 +83,8 @@ class Receiver:
         self.__cancel = True
     
     def __get_func_name(self, json_mess):
-        return json_mess['func']
+        func_key = 'func'
+        if func_key in json_mess:
+            return json_mess['func']
+        else:
+            return ''
