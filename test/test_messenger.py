@@ -31,8 +31,23 @@ class TestMessenger(unittest.TestCase):
         self.recv_thread.start()
         self.sender = Sender()
     
-    def test_send_mess(self):
+    def test_send_mess_regular(self):
+        print(sys._getframe().f_code.co_name + ' start')
         d_message = {'func': 'func2', 'arg': 'test'}
+        j_message = json.dumps(d_message)
+        result = self.sender.send(TEST_PROCESS_ID, j_message)
+        self.assertEqual(True, result)
+    
+    def test_send_mess_nostring(self):
+        print(sys._getframe().f_code.co_name + ' start')
+        d_message = {}
+        j_message = json.dumps(d_message)
+        result = self.sender.send(TEST_PROCESS_ID, j_message)
+        self.assertEqual(True, result)
+
+    def test_send_mess_invalid_func(self):
+        print(sys._getframe().f_code.co_name + ' start')
+        d_message = {'func': 'func4', 'arg': 'test'}
         j_message = json.dumps(d_message)
         result = self.sender.send(TEST_PROCESS_ID, j_message)
         self.assertEqual(True, result)
