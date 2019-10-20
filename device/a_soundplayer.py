@@ -21,4 +21,4 @@ class ApiSoundPlayer:
     def __send_mess(self, d_mess):
         self.__sender = Sender()
         j_message = json.dumps(d_mess)
-        self.__sender.send(get_port(ProcessId.SOUNDPLAYER), j_message)
+        self.__sender.send(ProcessId.SOUNDPLAYER, j_message)
