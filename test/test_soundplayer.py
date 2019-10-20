@@ -29,11 +29,13 @@ class TestSoundPlayer(unittest.TestCase):
         result = self.soundplayer.play_file(1)
         self.assertEqual(True, result)
     
+    """
     def test_kill(self):
         print(sys._getframe().f_code.co_name + ' start')
         result = self.soundplayer.kill()
         self.assertEqual(True, result)
-    
+    """
+
     def tearDown(self):
         print('TestSoundPlayer tearDown')
         del self.soundplayer
