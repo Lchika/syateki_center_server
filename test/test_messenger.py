@@ -3,6 +3,7 @@ import pathlib
 import threading
 import unittest
 import json
+import time
 parent_dir = str(pathlib.Path(__file__).parent.parent.resolve())
 sys.path.append(parent_dir)
 from common.c_messenger import Sender, Receiver
@@ -21,14 +22,14 @@ def func2(json_mess):
 def func3(json_mess):
     print('exec func3')
 
+receiver = Receiver(TEST_PROCESS_ID)
+d_callbacks = {'func1': func1, 'func2': func2, 'func3': func3}
+recv_thread = threading.Thread(target=receiver.open, args=(d_callbacks,))
+recv_thread.start()
 
 class TestMessenger(unittest.TestCase):
     def setUp(self):
         print('TestMessenger setup')
-        self.receiver = Receiver(TEST_PROCESS_ID)
-        d_callbacks = {'func1': func1, 'func2': func2, 'func3': func3}
-        self.recv_thread = threading.Thread(target=self.receiver.open, args=(d_callbacks,))
-        self.recv_thread.start()
         self.sender = Sender()
     
     def test_send_mess_regular(self):
@@ -54,8 +55,8 @@ class TestMessenger(unittest.TestCase):
     
     def tearDown(self):
         print('TestMessenger teardown')
-        self.receiver.close()
-        self.recv_thread.join()
+        # self.receiver.close()
+        # self.recv_thread.join()
         del self.sender
 
 

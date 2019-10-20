@@ -9,8 +9,8 @@ REF_PORT = 50000
 
 class ProcessId(IntEnum):
     DISPLAYER = 0
-    SOUNDPLAYER = auto()
-    WEBSERVER = auto()
+    SOUNDPLAYER = 1
+    WEBSERVER = 2
 
 
 def get_port(process_id):

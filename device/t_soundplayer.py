@@ -19,7 +19,7 @@ def kill(d_mess):
 
 
 def run():
-    receiver = Receiver(get_port(ProcessId.SOUNDPLAYER))
+    receiver = Receiver(ProcessId.SOUNDPLAYER)
     d_callbacks = {'play_file': play_file, 'kill': kill}
     receiver.open(d_callbacks)
 
