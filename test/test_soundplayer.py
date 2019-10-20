@@ -11,12 +11,13 @@ from device.a_soundplayer import ApiSoundPlayer
 
 def run_task():
     command = ['python', str(pathlib.Path(__file__).parent.parent.resolve()) + '/device/t_soundplayer.py']
+    print('command = ' + 'python ' + str(pathlib.Path(__file__).parent.parent.resolve()) + '/device/t_soundplayer.py')
     res = subprocess.call(command)
     print('res = ' + res)
 
 
-task_thread = threading.Thread(target=run_task)
-task_thread.start()
+# task_thread = threading.Thread(target=run_task)
+# task_thread.start()
 
 
 class TestSoundPlayer(unittest.TestCase):
