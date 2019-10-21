@@ -50,8 +50,12 @@ x = 0
 # Load default font.
 font = ImageFont.load_default()
 
+
 def disp_connecivity(d_mess):
-    connectables = d_mess['connectables']
+    # connectables = d_mess['connectables']
+    draw.text((x, top + 8), "1:× 2:○", font=font, fill=255)
+    disp.image(image)
+    disp.display()
 
 
 def kill(d_mess):
@@ -79,3 +83,4 @@ def run():
 if __name__ == '__main__':
     disp_ip()
     run()
+    disp_connecivity('test')
