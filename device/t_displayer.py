@@ -83,6 +83,5 @@ def run():
 
 if __name__ == '__main__':
     disp_ip()
-    run()
-    time.sleep(.1)
     disp_connecivity('test')
+    run()
