@@ -1,3 +1,4 @@
+import time
 import Adafruit_SSD1306
 from PIL import Image
 from PIL import ImageDraw
@@ -83,4 +84,5 @@ def run():
 if __name__ == '__main__':
     disp_ip()
     run()
+    time.sleep(.1)
     disp_connecivity('test')
