@@ -55,8 +55,8 @@ font = ImageFont.load_default()
 def disp_connecivity(d_mess):
     # connectables = d_mess['connectables']
     draw.text((x, top + 8), "1:NG 2:OK 3:OK 4:NG", font=font, fill=255)
-    draw.text((x, top + 8), "5:NG 6:OK 7:OK 8:NG", font=font, fill=255)
-    draw.text((x, top + 8), "9:NG 10:OK 11:OK 12:NG", font=font, fill=255)
+    draw.text((x, top + 16), "5:NG 6:OK 7:OK 8:NG", font=font, fill=255)
+    draw.text((x, top + 25), "9:NG 10:OK 11:OK 12:NG", font=font, fill=255)
     disp.image(image)
     disp.display()
 
