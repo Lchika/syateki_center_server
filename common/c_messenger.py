@@ -1,5 +1,5 @@
 from socket import socket, AF_INET, SOCK_STREAM
-from enum import IntEnum, auto
+from enum import IntEnum
 import json
 from .c_debug import logger
 
