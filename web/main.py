@@ -1,4 +1,4 @@
-from flask import Flask, request, g
+from flask import Flask, request
 import urllib.request
 import ssl
 import re
@@ -28,7 +28,7 @@ def set_target():
     for i, r in enumerate(results):
         if r:
             targets.append("192.168.100." + str(200 + i))
-    logger().info('targets = %s', g.targets)
+    logger().info('targets = %s', targets)
     with open(targets_csv_path(), 'w') as f:
         writer = csv.writer(f)
         writer.writerow(targets)
