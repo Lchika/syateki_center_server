@@ -20,7 +20,7 @@ def set_target():
     results = []
     for n in range(12):
         hosts.append("192.168.100." + str(200 + n))
-    results = pings.reached(hosts)
+    results = pings.scan(hosts)
     __targets = []
     for i, r in enumerate(results):
         if r:
