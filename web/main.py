@@ -2,6 +2,7 @@ from flask import Flask, request, g
 import urllib.request
 import ssl
 import re
+import csv
 import sys
 import pathlib
 parent_dir = str(pathlib.Path(__file__).parent.parent.resolve())
@@ -13,17 +14,24 @@ from common.c_ping import Pings
 app = Flask(__name__)
 
 
+def targets_csv_path():
+    return '/home/pi/syateki_center_server/web/targets.csv'
+
+
 def set_target():
     hosts = []
     results = []
     for n in range(12):
         hosts.append("192.168.100." + str(200 + n))
     results = Pings().scan(hosts)
-    g.targets = []
+    targets = []
     for i, r in enumerate(results):
         if r:
-            g.targets.append("192.168.100." + str(200 + i))
+            targets.append("192.168.100." + str(200 + i))
     logger().info('targets = %s', g.targets)
+    with open(targets_csv_path(), 'w') as f:
+        writer = csv.writer(f)
+        writer.writerow(targets)
 
 
 def get_target_num(response):
@@ -51,7 +59,11 @@ def get_hit_num(targets, gun_num):
 @app.route("/shoot/1", methods=["GET"])
 def get_shoot():
     if request.method == "GET":
-        return str(get_hit_num(g.targets, '1'))
+        targets = []
+        with open(targets_csv_path()) as f:
+            reader = csv.reader(f)
+            targets = next(reader)
+        return str(get_hit_num(targets, '1'))
 
 
 @app.route("/", methods=["GET"])
