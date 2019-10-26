@@ -53,7 +53,7 @@ def get_hit_num(targets, gun_num):
             # logger().info('target_num = ' + target_num)
             if target_num == gun_num:
                 logger().info('hit_num = ' + str(i + 1))
-                return i + 1
+                return (i + 1)
     return (-1)
 
 
