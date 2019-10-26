@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, g
 import urllib.request
 import ssl
 import re
@@ -11,8 +11,6 @@ from common.c_ping import Pings
 
 
 app = Flask(__name__)
-pings = Pings()
-__targets = []
 
 
 def set_target():
@@ -20,12 +18,12 @@ def set_target():
     results = []
     for n in range(12):
         hosts.append("192.168.100." + str(200 + n))
-    results = pings.scan(hosts)
-    __targets = []
+    results = Pings().scan(hosts)
+    g.targets = []
     for i, r in enumerate(results):
         if r:
-            __targets.append("192.168.100." + str(200 + i))
-    logger().info('targets = %s', __targets)
+            g.targets.append("192.168.100." + str(200 + i))
+    logger().info('targets = %s', g.targets)
 
 
 def get_target_num(response):
@@ -53,7 +51,7 @@ def get_hit_num(targets, gun_num):
 @app.route("/shoot/1", methods=["GET"])
 def get_shoot():
     if request.method == "GET":
-        return str(get_hit_num(__targets, '1'))
+        return str(get_hit_num(g.targets, '1'))
 
 
 @app.route("/", methods=["GET"])
