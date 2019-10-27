@@ -53,7 +53,7 @@ font = ImageFont.load_default()
 
 
 def disp_connecivity(d_mess):
-    connectables = d_mess['connectables']
+    conn = d_mess['connectables']
     draw.text((x, top + 8), "1:" + strc(conn[0]) + " 2:" + strc(conn[1]) + " 3:" + strc(conn[2]) + " 4:" + strc(conn[3]), font=font, fill=255)
     draw.text((x, top + 16), "5:" + strc(conn[4]) + " 6:" + strc(conn[5]) + " 7:" + strc(conn[6]) + " 8:" + strc(conn[7]), font=font, fill=255)
     draw.text((x, top + 25), "9:" + strc(conn[8]) + " 10:" + strc(conn[9]) + " 11:" + strc(conn[10]) + " 12:" + strc(conn[11]), font=font, fill=255)
@@ -83,7 +83,7 @@ def strc(conn):
 
 def run():
     receiver = Receiver(ProcessId.DISPLAYER)
-    d_callbacks = {'disp_connectiviry': disp_connecivity, 'kill': kill}
+    d_callbacks = {'disp_connectivity': disp_connecivity, 'kill': kill}
     receiver.open(d_callbacks)
 
 
