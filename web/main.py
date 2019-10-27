@@ -9,6 +9,7 @@ parent_dir = str(pathlib.Path(__file__).parent.parent.resolve())
 sys.path.append(parent_dir)
 from common.c_debug import logger
 from common.c_ping import Pings
+from device.a_displayer import ApiDisplayer
 
 
 app = Flask(__name__)
@@ -24,6 +25,7 @@ def set_target():
     for n in range(12):
         hosts.append("192.168.100." + str(200 + n))
     results = Pings().scan(hosts)
+    ApiDisplayer().disp_connectivity(results)
     targets = []
     for i, r in enumerate(results):
         if r:
