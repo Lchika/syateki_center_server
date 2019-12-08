@@ -59,14 +59,15 @@ def get_hit_num(targets, gun_num):
     return (-1)
 
 
-@app.route("/shoot/1", methods=["GET"])
-def get_shoot():
+# id = 1 ~ 10
+@app.route("/shoot/<id>", methods=["GET"])
+def get_shoot(id = '1'):
     if request.method == "GET":
         targets = []
         with open(targets_csv_path()) as f:
             reader = csv.reader(f)
             targets = next(reader)
-        return str(get_hit_num(targets, '1'))
+        return str(get_hit_num(targets, id))
 
 
 @app.route("/", methods=["GET"])
