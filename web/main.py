@@ -43,6 +43,8 @@ def get_target_num(response):
 def get_hit_num(targets, gun_num):
     ssl._create_default_https_context = ssl._create_unverified_context
     logger().info('targets = %s', targets)
+    #if not targets:
+    #    return (-1)
     for i, t in enumerate(targets):
         logger().info('connect to target: ' + str(i))
         url_target = 'http://' + t
