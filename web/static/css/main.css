@@ -1,5 +1,21 @@
 @charset 'utf-8';
 
-.container {
+.flex {
   display: flex;
+}
+
+p#timer {
+  font-size: 5rem;
+}
+
+.score {
+  font-size: 3rem;
+}
+
+.score th {
+  padding: 0px 20px;
+}
+
+.score td {
+  padding: 5px 20px;
 }

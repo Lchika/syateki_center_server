@@ -13,6 +13,7 @@ const playMinute = 1;
 document.getElementById('start').addEventListener('click', function () {
     if (document.getElementById('start').innerHTML === 'START') {
         start = new Date();
+        initScore();
         idTimeCount = setInterval(runTimer, 10);
         idFetchScore = setInterval(fetchScore, 1000);
         document.getElementById('start').innerHTML = 'STOP';
@@ -22,6 +23,7 @@ document.getElementById('start').addEventListener('click', function () {
     } else {
         clearInterval(idTimeCount);
         clearInterval(idFetchScore);
+        initScore();
         document.getElementById('start').innerHTML = 'START';
         document.getElementById('timer').innerHTML = '0' + String(playMinute) + ':00:00';
 
@@ -97,4 +99,12 @@ var fetchScore = function () {
             }
         })
     }
+}
+
+var initScore = function () {
+    axios.get('/init').then(function (response) {
+        if(response.status == 200){
+            console.log('initScore Success');
+        }
+    })
 }

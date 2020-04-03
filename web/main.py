@@ -18,7 +18,7 @@ app = Flask(__name__)
 
 
 def targets_csv_path():
-    return '/home/pi/syateki_center_server/web/targets.csv'
+    return './web/targets.csv'
 
 
 def set_target():
@@ -103,10 +103,22 @@ def get_score(id='1'):
         dic = {'point': score[1], 'bullet': score[2]}
         return json.dumps(dic)
 
+
 @app.route("/", methods=["GET"])
 def root():
     player_num = request.args.get("player_num", 1)
     return render_template('index.html', player_num=int(player_num))
+
+
+@app.route("/init", methods=["GET"])
+def init_score():
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("UPDATE current_score SET bullet = 20, point = 0")
+    conn.commit()
+    cur.close()
+    conn.close()
+    return "OK"
 
 
 if __name__ == "__main__":
