@@ -1,10 +1,12 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 import urllib.request
 import ssl
 import re
 import csv
 import sys
 import pathlib
+import psycopg2
+import json
 parent_dir = str(pathlib.Path(__file__).parent.parent.resolve())
 sys.path.append(parent_dir)
 from common.c_debug import logger
@@ -61,22 +63,52 @@ def get_hit_num(targets, gun_num):
     return (-1)
 
 
+def get_connection():
+    return psycopg2.connect(database='syateki_center_server',
+                            user='postgres',
+                            password='admin',
+                            host='localhost',
+                            port='5432')
+
+
 # id = 1 ~ 10
 @app.route("/shoot/<id>", methods=["GET"])
-def get_shoot(id = '1'):
+def get_shoot(id='1'):
     if request.method == "GET":
         targets = []
         with open(targets_csv_path()) as f:
             reader = csv.reader(f)
             targets = next(reader)
-        return str(get_hit_num(targets, id))
+        hit_num = str(get_hit_num(targets, id))
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("UPDATE current_score SET bullet = bullet - 1 WHERE id = %s", (id,))
+        if hit_num == id:
+            cur.execute("UPDATE current_score SET point = point + 1 WHERE id = %s", (id,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return hit_num
 
+# id = 1 ~ 10
+@app.route("/score/<id>", methods=["GET"])
+def get_score(id='1'):
+    if request.method == "GET":
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM current_score WHERE id = %s", (id,))
+        score = cur.fetchone()
+        cur.close()
+        conn.close()
+        dic = {'point': score[1], 'bullet': score[2]}
+        return json.dumps(dic)
 
 @app.route("/", methods=["GET"])
 def root():
-    return 'Syateki Center Server is running.'
+    player_num = request.args.get("player_num", 1)
+    return render_template('index.html', player_num=int(player_num))
 
 
 if __name__ == "__main__":
-    set_target()
+    # set_target()
     app.run("0.0.0.0")
