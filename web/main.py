@@ -18,7 +18,7 @@ app = Flask(__name__)
 
 
 def targets_csv_path():
-    return './web/targets.csv'
+    return '/home/pi/syateki_center_server/web/targets.csv'
 
 
 def set_target():
@@ -49,7 +49,8 @@ def get_hit_num(targets, gun_num):
     #    return (-1)
     for i, t in enumerate(targets):
         logger().info('connect to target: ' + str(i))
-        url_target = 'http://' + t
+        # url_target = 'http://' + t
+        url_target = 'http://' + t + '?gun_num=' + gun_num
         req = urllib.request.Request(url_target)
         target_num = '0'
         with urllib.request.urlopen(req) as res:
@@ -65,8 +66,8 @@ def get_hit_num(targets, gun_num):
 
 def get_connection():
     return psycopg2.connect(database='syateki_center_server',
-                            user='postgres',
-                            password='admin',
+                            user='user',
+                            password='password',
                             host='localhost',
                             port='5432')
 
@@ -79,16 +80,16 @@ def get_shoot(id='1'):
         with open(targets_csv_path()) as f:
             reader = csv.reader(f)
             targets = next(reader)
-        hit_num = str(get_hit_num(targets, id))
+        hit_num = get_hit_num(targets, id)
         conn = get_connection()
         cur = conn.cursor()
         cur.execute("UPDATE current_score SET bullet = bullet - 1 WHERE id = %s", (id,))
-        if hit_num == id:
+        if hit_num > 0:
             cur.execute("UPDATE current_score SET point = point + 1 WHERE id = %s", (id,))
         conn.commit()
         cur.close()
         conn.close()
-        return hit_num
+        return str(hit_num)
 
 # id = 1 ~ 10
 @app.route("/score/<id>", methods=["GET"])
@@ -122,5 +123,5 @@ def init_score():
 
 
 if __name__ == "__main__":
-    # set_target()
+    set_target()
     app.run("0.0.0.0")

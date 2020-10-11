@@ -57,6 +57,7 @@ var runTimer = function () {
         drawCircle(100 * (playMinute * 60 - seconds) / (playMinute * 60));
     } else {
         clearInterval(idTimeCount);
+        clearInterval(idFetchScore);
         document.getElementById('timer').innerHTML = '0' + String(playMinute) + ':00:00';
         //document.getElementById('timer').style.color = 'white';
         document.getElementById('start').innerHTML = 'START';
@@ -84,9 +85,9 @@ var drawCircle = function (persent) {
   
   context.beginPath();
 
-  context.arc(100, 100, 50, -90 * Math.PI / 180, (270 * persent / 100) * Math.PI / 180, false);
+  context.arc(300, 200, 150, -90 * Math.PI / 180, ((360 * persent / 100) - 90) * Math.PI / 180, false);
   context.strokeStyle = "red";
-  context.lineWidth = 40;
+  context.lineWidth = 80;
   context.stroke();
 }
 

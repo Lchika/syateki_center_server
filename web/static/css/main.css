@@ -4,12 +4,16 @@
   display: flex;
 }
 
+.app_area {
+  margin: 20px 100px;
+}
+
 p#timer {
-  font-size: 5rem;
+  font-size: 10rem;
 }
 
 .score {
-  font-size: 3rem;
+  font-size: 5rem;
 }
 
 .score th {

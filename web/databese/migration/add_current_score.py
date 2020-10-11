@@ -4,7 +4,7 @@ import psycopg2
 def get_connection():
     return psycopg2.connect(database='syateki_center_server',
                             user='user',
-                            password='pass',
+                            password='password',
                             host='localhost',
                             port='5432')
 
