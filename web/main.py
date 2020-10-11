@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template
+import os
 import urllib.request
 import ssl
 import re
@@ -14,7 +15,16 @@ from common.c_ping import Pings
 from device.a_displayer import ApiDisplayer
 
 
-app = Flask(__name__)
+config_type = {
+    "development": "config.Development",
+    "production": "config.Production",
+    "testing": "config.Testing"
+}
+
+
+app = Flask(__name__, instance_relative_config=True)
+app.config.from_object(config_type.get(os.getenv("FLASK_APP_ENV", "production")))
+app.config.from_pyfile('config.cfg')
 
 
 def targets_csv_path():
@@ -65,13 +75,46 @@ def get_hit_num(targets, gun_num):
 
 
 def get_connection():
-    return psycopg2.connect(database='syateki_center_server',
-                            user='user',
-                            password='password',
-                            host='localhost',
-                            port='5432')
+    return psycopg2.connect(database=app.config['DB_NAME'],
+                            user=app.config['DB_USER'],
+                            password=app.config['DB_PASSWORD'],
+                            host=app.config['DB_HOST'],
+                            port=app.config['DB_PORT'])
 
 
+def regist_score(time, score):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("INSERT INTO scores (time, score) VALUES (%s, %s) RETURNING id", (time, score))
+    id = cur.fetchone()
+    conn.commit()
+    cur.close()
+    conn.close()
+    logger().info('resisterd id = ' + str(id[0]))
+    return id[0]
+
+
+def get_rank(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT score_rank FROM (SELECT *, RANK() OVER(ORDER BY score DESC, time ASC) AS score_rank FROM scores) AS grade WHERE id = %s", (id,))
+    rank = cur.fetchone()
+    cur.execute("SELECT COUNT(id) FROM scores")
+    cur.close()
+    conn.close()
+    logger().info('rank = ' + str(rank))
+    return rank[0]
+
+
+def get_records_num():
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT COUNT(id) FROM scores")
+    count = cur.fetchone()
+    cur.close()
+    conn.close()
+    logger().info('rank = ' + str(count))
+    return count[0]
 # id = 1 ~ 10
 @app.route("/shoot/<id>", methods=["GET"])
 def get_shoot(id='1'):
@@ -111,6 +154,20 @@ def root():
     return render_template('index.html', player_num=int(player_num))
 
 
+@app.route("/result", methods=["GET"])
+def show_result():
+    player_num = int(request.args.get("player_num", 1))
+    scores = []
+    for i in range(player_num):
+        time = float(request.args.get("time" + str(i), -1.0))
+        score = int(request.args.get("score" + str(i), -1))
+        id = regist_score(time, score)
+        rank = get_rank(id)
+        scores.append({'time': time, 'score': score, 'rank': rank})
+    count = get_records_num()
+    return render_template('result.html', player_num=player_num, scores=scores, count=count)
+
+
 @app.route("/init", methods=["GET"])
 def init_score():
     conn = get_connection()
@@ -123,5 +180,5 @@ def init_score():
 
 
 if __name__ == "__main__":
-    set_target()
+    #set_target()
     app.run("0.0.0.0")

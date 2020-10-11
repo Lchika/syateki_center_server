@@ -1,0 +1,22 @@
+@charset 'utf-8';
+
+* {
+  font-size: 1.5vw;
+}
+
+.rank-main {
+  font-size: 14vw;
+  font-weight: bold;
+}
+
+.rank-sub {
+  font-size: 3vw;
+}
+
+.credit {
+  font-size: 1vw;
+}
+
+a.btn-secondary {
+  font-size: 0.8vw;
+}

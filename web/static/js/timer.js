@@ -9,6 +9,7 @@ var time;
 var idTimeCount;
 var idFetchScore;
 const playMinute = 1;
+axios.defaults.withCredentials = true;
 
 document.getElementById('start').addEventListener('click', function () {
     if (document.getElementById('start').innerHTML === 'START') {
@@ -20,20 +21,17 @@ document.getElementById('start').addEventListener('click', function () {
 
         document.getElementById('start-button-box').classList.remove('button');
         document.getElementById('start-button-box').classList.add('pushed-button');
+        
+        setBgm("/static/audio/MusMus-BGM-045.mp3")
     } else {
         clearInterval(idTimeCount);
         clearInterval(idFetchScore);
         initScore();
-        document.getElementById('start').innerHTML = 'START';
-        document.getElementById('timer').innerHTML = '0' + String(playMinute) + ':00:00';
-
-        document.getElementById('start-button-box').classList.remove('pushed-button');
-        document.getElementById('start-button-box').classList.add('button');
-        drawCircle(100);
+        resetDisplay();
     }
 });
 
-var runTimer = function () {
+var runTimer = async function () {
     now = new Date();
     time = now.getTime() - start.getTime();
 
@@ -56,16 +54,12 @@ var runTimer = function () {
 
         drawCircle(100 * (playMinute * 60 - seconds) / (playMinute * 60));
     } else {
-        clearInterval(idTimeCount);
-        clearInterval(idFetchScore);
-        document.getElementById('timer').innerHTML = '0' + String(playMinute) + ':00:00';
-        //document.getElementById('timer').style.color = 'white';
-        document.getElementById('start').innerHTML = 'START';
-
-        document.getElementById('start-button-box').classList.remove('pushed-button');
-        document.getElementById('start-button-box').classList.add('button');
-
-        drawCircle(100);
+        if (seconds > playMinute * 60) {
+            seconds = playMinute * 60;
+        }
+        resetDisplay();
+        uploadScore(seconds, await getScore(1));
+        jumpToResultPage(1, await getAllScore(1), seconds);
     }
 
 }
@@ -102,10 +96,70 @@ var fetchScore = function () {
     }
 }
 
+// player_num = 1 ~ 4
+var getScore = async function (player_num) {
+    const data = await axios.get('/score/' + String(player_num));
+    return data.data.point;
+}
+
+var getAllScore = async function (player_num) {
+    var scores = [];
+    for (let i = 1; i <= player_num; i++) {
+        scores.push({ 'score': await getScore(i) });
+    }
+    console.log(scores);
+    return scores;
+}
+
 var initScore = function () {
     axios.get('/init').then(function (response) {
         if(response.status == 200){
             console.log('initScore Success');
         }
     })
+}
+
+var uploadScore = function (time, score) {
+    axios.post('https://lchika.club/platform/shooting_scores', {
+        score: {
+            time: time,
+            miss: -1,
+            score: score,
+            name: 'test',
+            player_num: 1
+        }
+    }).then(function (response) {
+        if(response.status == 201){
+            console.log('uploadScore Success');
+        }else{
+            console.log('faild to uploadScore');
+        }
+    })
+}
+
+var resetDisplay = function () {
+    clearInterval(idTimeCount);
+    document.getElementById('timer').innerHTML = '0' + String(playMinute) + ':00:00';
+    //document.getElementById('timer').style.color = 'white';
+    document.getElementById('start').innerHTML = 'START';
+
+    document.getElementById('start-button-box').classList.remove('pushed-button');
+    document.getElementById('start-button-box').classList.add('button');
+
+    drawCircle(100);
+}
+
+var setBgm = function (src) {
+    document.querySelector("#bgm source").src = src;
+    document.querySelector("#bgm").load();
+}
+
+var jumpToResultPage = function (player_num, scores, time) {
+    var url = 'result?player_num=' + String(player_num);
+    for (let i = 0; i < player_num; i++) {
+        url += '&score' + String(i) + '=' + String(scores[i]['score']);
+        url += '&time' + String(i) + '=' + String(time);
+    }
+    //console.log(url)
+    window.location.href = url;
 }

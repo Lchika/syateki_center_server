@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/result.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+  </head>
+  <body>
+    <audio controls autoplay loop id="bgm">
+      <source src="/static/audio/MusMus-BGM-CP03.mp3">
+    </audio>
+    <div class="container">
+      あなたの順位<br>
+      <span class="rank-main">{{ scores[0].rank }}位</span><span class="rank-sub"> / {{ count }}</span>
+      <div class="score">
+        スコア：{{ scores[0].score }}<br>
+        クリアタイム[秒]：{{ scores[0].time }}
+      </div>
+      <div class="my-4">
+        遊んでくれてありがとう！
+      </div>
+      <div class="credit">
+        BGM素材：MusMus (http://musmus.main.jp/)<br>
+        効果音：効果音ラボ (https://soundeffect-lab.info/)
+      </div>
+      <a class="my-2 btn btn-block btn-secondary" href="/" role="button">プレイ画面へ</a>
+      <!--
+      {%  for i in range(player_num) %}
+        time = {{ scores[i].time }}<br>
+        score = {{ scores[i].score }}<br>
+        rank = {{ scores[i].rank }}<br>
+        <br>
+      {% endfor %}
+      -->
+    </div>
+
+    <script src="/static/js/jQuery.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/axios.min.js"></script>
+  </body>
+</html>
