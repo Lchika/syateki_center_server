@@ -74,6 +74,19 @@ def get_hit_num(targets, gun_num):
     return (-1)
 
 
+def init_targets(targets):
+    ssl._create_default_https_context = ssl._create_unverified_context
+    for i, t in enumerate(targets):
+        logger().info('initialize target: ' + str(i))
+        # url_target = 'http://' + t
+        url_target = 'http://' + t + '/init'
+        req = urllib.request.Request(url_target)
+        with urllib.request.urlopen(req) as res:
+            res_html = res.read().decode('utf-8')
+            logger().info('init response: ' + res_html)
+    return
+
+
 def get_connection():
     return psycopg2.connect(database=app.config['DB_NAME'],
                             user=app.config['DB_USER'],
@@ -115,6 +128,7 @@ def get_records_num():
     conn.close()
     logger().info('rank = ' + str(count))
     return count[0]
+
 # id = 1 ~ 10
 @app.route("/shoot/<id>", methods=["GET"])
 def get_shoot(id='1'):
@@ -176,6 +190,13 @@ def init_score():
     conn.commit()
     cur.close()
     conn.close()
+    
+    targets = []
+    with open(targets_csv_path()) as f:
+        reader = csv.reader(f)
+        targets = next(reader)
+    init_targets(targets)
+    
     return "OK"
 
 
