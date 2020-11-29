@@ -180,5 +180,5 @@ def init_score():
 
 
 if __name__ == "__main__":
-    #set_target()
+    set_target()
     app.run("0.0.0.0")
