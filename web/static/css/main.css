@@ -1,25 +1,40 @@
 @charset 'utf-8';
 
+* {
+  font-size: 1.5vw;
+}
+
 .flex {
   display: flex;
 }
 
 .app_area {
-  margin: 20px 100px;
+  margin: 1% 5%;
+}
+
+.app_area > p {
+  font-size: 1vw;
+}
+
+.app_area .btn-secondary {
+  font-size: 1vw;
 }
 
 p#timer {
-  font-size: 10rem;
-}
-
-.score {
-  font-size: 5rem;
+  font-size: 11vw;
 }
 
 .score th {
   padding: 0px 20px;
+  font-size: 3vw;
 }
 
 .score td {
   padding: 5px 20px;
+  font-size: 3vw;
+}
+
+.canvas-wrapper {
+  width: 25vw;
+  height: 25vw;
 }

@@ -11,6 +11,10 @@ var idFetchScore;
 const playMinute = 1;
 axios.defaults.withCredentials = true;
 
+var w = $('.canvas-wrapper').width();
+$('#canvas-timer').attr('width', w);
+$('#canvas-timer').attr('height', w);
+
 document.getElementById('start').addEventListener('click', function () {
     if (document.getElementById('start').innerHTML === 'START') {
         start = new Date();
@@ -21,7 +25,7 @@ document.getElementById('start').addEventListener('click', function () {
 
         document.getElementById('start-button-box').classList.remove('button');
         document.getElementById('start-button-box').classList.add('pushed-button');
-        
+
         setBgm("/static/audio/MusMus-BGM-045.mp3")
     } else {
         clearInterval(idTimeCount);
@@ -74,14 +78,16 @@ var addZero = function (value) {
 var drawCircle = function (persent) {
   const canvas = document.getElementById('canvas-timer');
   const context = canvas.getContext('2d');
-  
+
   context.clearRect(0, 0, canvas.width, canvas.height);
-  
+
   context.beginPath();
 
-  context.arc(300, 200, 150, -90 * Math.PI / 180, ((360 * persent / 100) - 90) * Math.PI / 180, false);
+  const cw = $('#canvas-timer').width() / 2;
+  const clw = $('#canvas-timer').width() / 10;
+  context.arc(cw, cw, cw - (clw / 2), -90 * Math.PI / 180, ((360 * persent / 100) - 90) * Math.PI / 180, false);
   context.strokeStyle = "red";
-  context.lineWidth = 80;
+  context.lineWidth = clw;
   context.stroke();
 }
 

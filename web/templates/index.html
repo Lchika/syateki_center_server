@@ -8,12 +8,12 @@
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
   </head>
   <body>
-    <audio controls autoplay loop id="bgm">
+    <audio autoplay loop id="bgm">
       <source src="/static/audio/MusMus-BGM-100.mp3">
     </audio>
     <div class="app_area">
       <p class="m-0">プレイ人数</p>
-      <div class="setting_button mt-0 mb-5">
+      <div class="setting_button mt-0 mb-0">
         <a href="{{url_for('root', player_num='1')}}">
           <button type="button" id="one_player" class="btn btn-secondary">1人</button>
         </a>
@@ -33,7 +33,9 @@
           <div class="button" id="start-button-box">
             <button type="button" id="start" class="btn btn-primary">状態初期化</button>
           </div>
-          <canvas id="canvas-timer" width="690" height="690"></canvas>
+          <div class="canvas-wrapper">
+            <canvas id="canvas-timer"></canvas>
+          </div>
         </div>
         <div class="score mx-5">
           <table>

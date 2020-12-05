@@ -8,15 +8,15 @@
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
   </head>
   <body>
-    <audio controls autoplay loop id="bgm">
+    <audio autoplay loop id="bgm">
       <source src="/static/audio/MusMus-BGM-CP03.mp3">
     </audio>
-    <div class="container">
+    <div class="container mt-3">
       あなたの順位<br>
       <span class="rank-main">{{ scores[0].rank }}位</span><span class="rank-sub"> / {{ count }}</span>
       <div class="score">
         スコア：{{ scores[0].score }}<br>
-        クリアタイム[秒]：{{ scores[0].time }}
+        タイム：{{ scores[0].time }} [秒]
       </div>
       <div class="my-4">
         遊んでくれてありがとう！
